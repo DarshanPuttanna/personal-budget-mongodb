@@ -2,8 +2,11 @@ const express = require ('express');
 const app = express();
 const port= 3000; 
 const dataPath = require ('./budgetData.json');
+const cors = require('cors');
 
-app.use('/', express.static('public'));
+app.use(cors());
+
+// app.use('/', express.static('public'));
 
 // const budget = {
 //     myBudget: [
@@ -23,9 +26,9 @@ app.use('/', express.static('public'));
 //     },
 // ]};
 
-app.get('/hello', (req, res) =>{
-    res.send('Hello WOrld');
-});
+// app.get('/hello', (req, res) =>{
+//     res.send('Hello WOrld');
+// });
 
 app.get('/budget', (req, res) =>{
     res.json(dataPath);
