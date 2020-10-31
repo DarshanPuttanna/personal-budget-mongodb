@@ -144,19 +144,13 @@
         datasets: [
           {
             data: [],
-            backgroundColor: [
-              "#ffcd56",
-              "#ff6384",
-              "#36a2eb",
-              "#fd6b19",
-              "#F5DEB3",
-              "#5F9EA0",
-              "#00FFFF",
-            ],
+            backgroundColor: [],
           },
         ],
         labels: [],
       };
+
+      d3dataSource = [{ label: "", value: 1 }]
 
       function createChart() {
         var ctx = document.getElementById("myChart").getContext("2d");
@@ -169,19 +163,20 @@
       function getBudget() {
         axios.get("http://localhost:3000/budget").then(function (res) {
           console.log(res);
-        
-          for (var i = 0; i < res.data.myBudget.length; i++) {
-            dataSource.datasets[0].data[i] = res.data.myBudget[i].budget;
-            dataSource.labels[i] = res.data.myBudget[i].title;
+ 
+          for (var i = 0; i < res.data.length; i++) {
+            dataSource.datasets[0].data[i] = res.data[i].Budget;
+            dataSource.labels[i] = res.data[i].title;
+            dataSource.datasets[0].backgroundColor[i]=res.data[i].color;
           
             var mappingD3chart = new Object();
-            mappingD3chart.value= res.data.myBudget[i].budget;
-            mappingD3chart.label=res.data.myBudget[i].title;
+            mappingD3chart.value= res.data[i].Budget;
+            mappingD3chart.label=res.data[i].title;
             dataMap[i]=mappingD3chart;
         }
-          createChart();
-
+          
           dataD3=JSON.parse(JSON.stringify(dataMap));
+          createChart();
           createChartD3();
         });
       }
@@ -195,8 +190,8 @@
         svg.append("g").attr("class", "labels");
         svg.append("g").attr("class", "lines");
 
-        var width = 960,
-            height = 450,
+        var width = 950,
+            height = 350,
             radius = Math.min(width, height) / 2;
 
         var pie = d3.layout
@@ -225,24 +220,17 @@
           return d.data.label;
         };
 
-        var mappingNames = [];
-        for (var i =0 ; i < dataD3.length; i++) {
-            mappingNames[i] = dataD3[i].label;
+        // var mappingNames = [];
+        // for (var i =0 ; i < dataD3.length; i++) {
+        //     mappingNames[i] = dataSource.labels;
 
-        } 
+        // } 
 
         var color = d3.scale
           .ordinal()
-          .domain([mappingNames])
-          .range([
-            "#98cbc5", 
-            "#8a89a6",
-            "#5c6088", 
-            "#66486b", 
-            "#a75d56", 
-            "#d2743c", 
-            "#f08c00"
-        ]);
+          .domain(dataSource.labels)
+          .range(dataSource.datasets[0].backgroundColor
+        );
 
       /* ------- SLICE ARCS -------*/
 /* ------- PIE SLICES -------*/
